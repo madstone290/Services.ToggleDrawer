@@ -1,0 +1,15 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": false,
+        "target": "ES2017",
+        "outDir": "dist",
+        "baseUrl": "./src",
+    },
+    "include": [
+        "src/**/*"
+    ]
+}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Interactive Drawer</title>
+    <link rel="stylesheet" type="text/css" href="./css/toggle-drawer.css">
+</head>
+
+<body>
+    <style>
+        :root {
+            --drawer-width: 300px;
+        }
+
+        .container {
+            width: 50vw;
+            height: 50vh;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+
+            background-color: rosybrown;
+
+        }
+
+        .drawer-container {
+            position: absolute;
+            height: 100%;
+        }
+
+        .content {
+            border: 1px solid black;
+            width: calc(100% - var(--drawer-width));
+            height: 100%;
+            margin-left: var(--drawer-width);
+        }
+    </style>
+    <div class="container">
+        <div class="drawer-container">
+
+        </div>
+        <div class="content">
+
+        </div>
+    </div>
+
+    <script src="../dist/toggle-drawer.js"></script>
+
+    <script>
+        const container = document.querySelector('.drawer-container');
+
+        const drawer = Services.ToggleDrawer();
+        drawer.create(container);
+        drawer.setOptions({
+            singleSelect: true,
+            enableToggleBtn: true,
+            modeChangedCallback: (isMini) => {
+                if (isMini) {
+                    document.documentElement.style.setProperty('--drawer-width', '70px');
+                } else {
+                    document.documentElement.style.setProperty('--drawer-width', '300px');
+                }
+            }
+        });
+        drawer.setData({
+            menuItems: [
+                {
+                    name: 'Drawer 1',
+                    children: [
+                        { name: `1-1` },
+                        { name: `1-2` },
+                        { name: `1-3` }
+                    ]
+                },
+                {
+                    name: 'No.2',
+                    children: [
+                        { name: `2-1`, children: [{ name: `2-1-1` }, { name: `2-1-2` }] },
+                        { name: `2-2` },
+                        { name: `2-3`, children: [{ name: `2-1-1` }, { name: `2-1-2` }] },
+                    ]
+                },
+                {
+                    name: 'No.3',
+                    children: [
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                    ]
+                },
+                {
+                    name: 'No.3',
+                    children: [
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                    ]
+                },
+                {
+                    name: 'No.3',
+                    children: [
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                    ]
+                },
+                {
+                    name: 'No.3',
+                    children: [
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                        { name: `3-1`, children: [{ name: `3-1-1` }, { name: `3-1-2` }] },
+                        { name: `3-2`, children: [{ name: `3-2-1` }, { name: `3-2-2` }] },
+                        { name: `3-3`, children: [{ name: `3-3-1` }, { name: `3-3-2` }] },
+                    ]
+                },
+                {
+                    name: 'Drawer 1',
+                    children: [
+                        { name: `1-1` },
+                        { name: `1-2` },
+                        { name: `1-3` }
+                    ]
+                },
+                {
+                    name: 'Drawer 1',
+                    children: [
+                        { name: `1-1` },
+                        { name: `1-2` },
+                        { name: `1-3` }
+                    ]
+                },
+                {
+                    name: 'Drawer 1',
+                    children: [
+                        { name: `1-1` },
+                        { name: `1-2` },
+                        { name: `1-3` }
+                    ]
+                },
+            ]
+        });
+        drawer.render();
+    </script>
+</body>
+
+</html>
