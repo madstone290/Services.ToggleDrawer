@@ -76,7 +76,7 @@
     overflow: auto;
 }
 
-.td-mini .td-menu-item.td-level-0.td-selected:hover>.td-menu-item-children {
+.td-mini .td-menu-item.td-level-0:hover>.td-menu-item-children {
     display: block;
     left: calc(var(--td-drawer-mini-width) - var(--td-scroll-width));
     width: 200px;

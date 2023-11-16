@@ -81,7 +81,7 @@ namespace Services {
             }
 
             _rootListEl = _renderRootList();
-            const menuItems = _renderMenuItems();
+            const menuItems = _createMenuItems();
             _rootListEl.replaceChildren(...menuItems);
 
             _rootEl.appendChild(_rootListEl);
@@ -125,13 +125,13 @@ namespace Services {
             return rootListEl;
         }
 
-        function _renderMenuItems() {
+        function _createMenuItems() {
             return _data.menuItems.map(item => {
-                return _renderMenuItem(item);
+                return _createMenuItem(item);
             })
         }
 
-        function _renderMenuItem(item: MenuItem, level: number = 0) {
+        function _createMenuItem(item: MenuItem, level: number = 0) {
             const itemEl = document.createElement('li');
             const clsLevel = 'td-level-' + level;
             itemEl.className = `${CLS_MENU_ITEM} ${clsLevel}`;
@@ -146,7 +146,7 @@ namespace Services {
                 const containerEl = document.createElement('ul');
                 containerEl.className = `${CLS_MENU_ITEM_CHILDREN}`;
                 for (const child of item.children) {
-                    containerEl.appendChild(_renderMenuItem(child, level + 1));
+                    containerEl.appendChild(_createMenuItem(child, level + 1));
                 }
                 itemEl.appendChild(containerEl);
 
@@ -161,30 +161,35 @@ namespace Services {
                             }
                         }
                     }
-                    if (_isMini) {
-                        if (item.children && 0 < item.children.length) {
-                            const containerElHeight = item.children.length * _itemContentHeight;
-                            const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
-                            const containerMaxHeight = _rootEl.clientHeight;
-
-                            let adjustedContainerElTop = initialContainerElTop;
-                            if (initialContainerElTop + containerElHeight > containerMaxHeight) {
-                                adjustedContainerElTop = containerMaxHeight - containerElHeight;
-                                if (adjustedContainerElTop < 0) {
-                                    adjustedContainerElTop = 0;
-                                }
-                            }
-
-                            containerEl.style.top = adjustedContainerElTop + 'px';
-                        }
-                    }
-
                     itemEl.classList.toggle(CLS_SELECTED);
                     _selectedItemEl = itemEl;
+                });
+
+                itemEl.addEventListener('mouseenter', (event) => {
+                    if (_isMini) {
+                        _adjustContainerElTop(item, itemEl, containerEl);
+                    }
                 });
             }
 
             return itemEl;
+        }
+
+        function _adjustContainerElTop(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
+            if (item.children && 0 < item.children.length) {
+                const containerElHeight = item.children.length * _itemContentHeight;
+                const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
+                const containerMaxHeight = _rootEl.clientHeight;
+
+                let adjustedContainerElTop = initialContainerElTop;
+                if (initialContainerElTop + containerElHeight > containerMaxHeight) {
+                    adjustedContainerElTop = containerMaxHeight - containerElHeight;
+                    if (adjustedContainerElTop < 0) {
+                        adjustedContainerElTop = 0;
+                    }
+                }
+                childrenContainerEl.style.top = adjustedContainerElTop + 'px';
+            }
         }
 
         function _getRootListItemEl(itemEl: HTMLElement) {
