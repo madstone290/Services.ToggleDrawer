@@ -42,6 +42,10 @@
     background-color: aqua;
 }
 
+.td-header-box {
+    width: 100%;
+}
+
 .td-root li {
     list-style: none;
 }

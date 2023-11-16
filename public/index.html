@@ -61,6 +61,18 @@
                 } else {
                     document.documentElement.style.setProperty('--drawer-width', '300px');
                 }
+            },
+            customHeaderRender: (box) => {
+                const header = document.createElement('div');
+                header.style.height = '50px';
+                header.style.backgroundColor = 'green';
+                header.style.display = 'flex';
+                header.style.alignItems = 'center';
+                header.style.justifyContent = 'center';
+                header.style.color = 'white';
+                header.style.fontSize = '20px';
+                header.innerText = 'Custom Header';
+                box.appendChild(header);
             }
         });
         drawer.setData({

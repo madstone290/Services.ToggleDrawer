@@ -20,6 +20,8 @@ namespace Services {
         enableToggleBtn: boolean;
 
         modeChangedCallback(isMini: boolean): void;
+
+        customHeaderRender: (box: HTMLElement) => void;
     }
 
     export const ToggleDrawer = () => {
@@ -76,8 +78,16 @@ namespace Services {
 
         function render() {
             _rootEl.replaceChildren();
+
             if (_options.enableToggleBtn) {
                 _rootEl.appendChild(_renderToggleBtnBox());
+            }
+
+            if (_options.customHeaderRender) {
+                const headerBoxEl = document.createElement('div');
+                headerBoxEl.classList.add('td-header-box');
+                _options.customHeaderRender(headerBoxEl);
+                _rootEl.appendChild(headerBoxEl);
             }
 
             _rootListEl = _renderRootList();
