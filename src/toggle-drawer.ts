@@ -47,6 +47,7 @@ namespace Services {
         let _selectedItemEl: HTMLElement;
 
         let _isMini: boolean = false;
+        let _itemContentHeight: number = 0;
 
         function create(container: HTMLElement) {
             container.innerHTML = `
@@ -55,6 +56,14 @@ namespace Services {
             `;
             _rootEl = container.querySelector(`.${CLS_ROOT}`) as HTMLElement;
             _rootListEl = container.querySelector(`.${CLS_ROOT} .${CLS_ROOT_LIST}`);
+
+            _itemContentHeight = document.documentElement.style.getPropertyValue('--td-item-content-height') as any as number;
+
+            // Get the computed style of the element
+            const style = getComputedStyle(_rootEl);
+
+            const heightText = style.getPropertyValue('--td-item-content-height');
+            _itemContentHeight = parseInt(heightText);
         }
 
         function setOptions(options: ToggleDrawerOptions) {
@@ -98,7 +107,7 @@ namespace Services {
             _isMini = !_isMini;
 
             // todo reset selected items
-            if(_selectedItemEl){
+            if (_selectedItemEl) {
                 _selectedItemEl.classList.remove(CLS_SELECTED);
                 const selectedRootItem = _getRootListItemEl(_selectedItemEl);
                 if (selectedRootItem) {
@@ -153,7 +162,21 @@ namespace Services {
                         }
                     }
                     if (_isMini) {
-                        containerEl.style.top = itemEl.offsetTop - _rootEl.scrollTop + 'px';
+                        if (item.children && 0 < item.children.length) {
+                            const containerElHeight = item.children.length * _itemContentHeight;
+                            const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
+                            const containerMaxHeight = _rootEl.clientHeight;
+
+                            let adjustedContainerElTop = initialContainerElTop;
+                            if (initialContainerElTop + containerElHeight > containerMaxHeight) {
+                                adjustedContainerElTop = containerMaxHeight - containerElHeight;
+                                if (adjustedContainerElTop < 0) {
+                                    adjustedContainerElTop = 0;
+                                }
+                            }
+
+                            containerEl.style.top = adjustedContainerElTop + 'px';
+                        }
                     }
 
                     itemEl.classList.toggle(CLS_SELECTED);

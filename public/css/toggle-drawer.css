@@ -1,7 +1,8 @@
 .td-root {
     --td-drawer-full-width: 300px;
     --td-drawer-mini-width: 70px;
-    --scroll-width: 5px;
+    --td-scroll-width: 5px;
+    --td-item-content-height: 50px;
 }
 
 .td-root {
@@ -10,10 +11,11 @@
     background-color: blueviolet;
     height: 100%;
     overflow: auto;
+    transition: 0.4s;
 }
 
 .td-root::-webkit-scrollbar {
-    width: var(--scroll-width);
+    width: var(--td-scroll-width);
 }
 
 .td-root::-webkit-scrollbar-thumb {
@@ -70,14 +72,16 @@
 .td-mini .td-menu-item.td-level-0>.td-menu-item-children {
     display: none;
     position: absolute;
+    max-height: 100%;
+    overflow: auto;
 }
 
 .td-mini .td-menu-item.td-level-0.td-selected:hover>.td-menu-item-children {
     display: block;
-    left: calc(var(--td-drawer-mini-width) - var(--scroll-width));
+    left: calc(var(--td-drawer-mini-width) - var(--td-scroll-width));
     width: 200px;
 }
 
 .td-menu-item-content {
-    height: 50px;
+    height: var(--td-item-content-height);
 }
