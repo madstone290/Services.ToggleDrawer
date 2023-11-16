@@ -83,7 +83,22 @@
                 toggleBtnEl.innerText = 'Toggle';
                 box.appendChild(toggleBtnEl);
                 return toggleBtnEl;
-            }
+            },
+            customMenuItemRender: (box, item, level) => {
+                const menuItem = document.createElement('div');
+                menuItem.style.height = '50px';
+                menuItem.style.backgroundColor = 'transparent';
+                menuItem.style.width = '100%';
+                menuItem.style.color = 'white';
+                menuItem.style.fontSize = '20px';
+                menuItem.style.display = 'flex';
+                menuItem.style.paddingLeft = `${level * 20}px`;
+
+                menuItem.innerText = item.name;
+
+                box.appendChild(menuItem);
+                return menuItem;
+            },
         });
         drawer.setData({
             menuItems: [

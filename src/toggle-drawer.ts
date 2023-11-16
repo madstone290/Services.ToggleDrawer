@@ -21,13 +21,13 @@ namespace Services {
 
         customToggleBtnRender: (box: HTMLElement) => HTMLElement;
         customHeaderRender: (box: HTMLElement) => HTMLElement;
+        customMenuItemRender: (box: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
     export const ToggleDrawer = () => {
         const CLS_ROOT = 'td-root';
         const CLS_ROOT_LIST = 'td-root-list';
         const CLS_TOGGLE_BTN_BOX = 'td-toggle-btn-box';
-        const CLS_TOGGLE_BTN = 'td-toggle-btn';
 
         const CLS_MENU_ITEM = 'td-menu-item';
         const CLS_MENU_ITEM_CONTENT = 'td-menu-item-content';
@@ -36,9 +36,6 @@ namespace Services {
 
         const CLS_SELECTED = 'td-selected';
         const CLS_MINI = 'td-mini';
-
-
-
 
         let _options: ToggleDrawerOptions;
         let _data: ToggleDrawerData;
@@ -120,7 +117,7 @@ namespace Services {
         }
 
         function _renderRootList() {
-            const rootListEl = document.createElement('ul');
+            const rootListEl = document.createElement('div');
             rootListEl.classList.add(`${CLS_ROOT_LIST}`);
             return rootListEl;
         }
@@ -132,47 +129,53 @@ namespace Services {
         }
 
         function _createMenuItem(item: MenuItem, level: number = 0) {
-            const itemEl = document.createElement('li');
+            const menuItemBox = document.createElement('div');
             const clsLevel = 'td-level-' + level;
-            itemEl.className = `${CLS_MENU_ITEM} ${clsLevel}`;
-            itemEl.innerHTML = `
-            <div class="${CLS_MENU_ITEM_CONTENT}">
-            <a>
-            <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
-            </a>
-            </div>`;
+            menuItemBox.className = `${CLS_MENU_ITEM} ${clsLevel}`;
+            if (_options.customMenuItemRender) {
+                _options.customMenuItemRender(menuItemBox, item, level);
+            } else {
+                const defaultMenuItemEl = document.createElement('div');
+                defaultMenuItemEl.className = `${CLS_MENU_ITEM_CONTENT}`;
+                defaultMenuItemEl.innerHTML = `
+                <a>
+                <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
+                </a>
+                `;
+                menuItemBox.appendChild(defaultMenuItemEl);
+            }
 
             if (item.children && item.children.length > 0) {
-                const containerEl = document.createElement('ul');
+                const containerEl = document.createElement('div');
                 containerEl.className = `${CLS_MENU_ITEM_CHILDREN}`;
                 for (const child of item.children) {
                     containerEl.appendChild(_createMenuItem(child, level + 1));
                 }
-                itemEl.appendChild(containerEl);
+                menuItemBox.appendChild(containerEl);
 
-                itemEl.addEventListener('click', (event) => {
+                menuItemBox.addEventListener('click', (event) => {
                     event.stopPropagation();
                     if (_options.singleSelect) {
                         const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
                         if (selectedRootItemEl) {
-                            const currentRootItemEl = _getRootListItemEl(itemEl);
+                            const currentRootItemEl = _getRootListItemEl(menuItemBox);
                             if (selectedRootItemEl !== currentRootItemEl) {
                                 selectedRootItemEl.classList.remove(CLS_SELECTED);
                             }
                         }
                     }
-                    itemEl.classList.toggle(CLS_SELECTED);
-                    _selectedItemEl = itemEl;
+                    menuItemBox.classList.toggle(CLS_SELECTED);
+                    _selectedItemEl = menuItemBox;
                 });
 
-                itemEl.addEventListener('mouseenter', (event) => {
+                menuItemBox.addEventListener('mouseenter', (event) => {
                     if (_isMini) {
-                        _adjustContainerElTop(item, itemEl, containerEl);
+                        _adjustContainerElTop(item, menuItemBox, containerEl);
                     }
                 });
             }
 
-            return itemEl;
+            return menuItemBox;
         }
 
         function _adjustContainerElTop(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
