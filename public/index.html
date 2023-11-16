@@ -73,6 +73,16 @@
                 header.style.fontSize = '20px';
                 header.innerText = 'Custom Header';
                 box.appendChild(header);
+                return header;
+            },
+            customToggleBtnRender: (box) => {
+                const toggleBtnEl = document.createElement('div');
+                toggleBtnEl.style.height = '50px';
+                toggleBtnEl.style.backgroundColor = 'red';
+                toggleBtnEl.style.width = '100%';
+                toggleBtnEl.innerText = 'Toggle';
+                box.appendChild(toggleBtnEl);
+                return toggleBtnEl;
             }
         });
         drawer.setData({

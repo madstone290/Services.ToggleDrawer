@@ -17,11 +17,10 @@ namespace Services {
          */
         singleSelect: boolean;
 
-        enableToggleBtn: boolean;
-
         modeChangedCallback(isMini: boolean): void;
 
-        customHeaderRender: (box: HTMLElement) => void;
+        customToggleBtnRender: (box: HTMLElement) => HTMLElement;
+        customHeaderRender: (box: HTMLElement) => HTMLElement;
     }
 
     export const ToggleDrawer = () => {
@@ -79,8 +78,14 @@ namespace Services {
         function render() {
             _rootEl.replaceChildren();
 
-            if (_options.enableToggleBtn) {
-                _rootEl.appendChild(_renderToggleBtnBox());
+            if (_options.customToggleBtnRender) {
+                const toggleBtnBoxEl = document.createElement('div');
+                toggleBtnBoxEl.classList.add(CLS_TOGGLE_BTN_BOX);
+                const btnEl = _options.customToggleBtnRender(toggleBtnBoxEl);
+                btnEl.addEventListener('click', () => {
+                    toggleMini();
+                });
+                _rootEl.appendChild(toggleBtnBoxEl);
             }
 
             if (_options.customHeaderRender) {
@@ -95,21 +100,6 @@ namespace Services {
             _rootListEl.replaceChildren(...menuItems);
 
             _rootEl.appendChild(_rootListEl);
-        }
-
-        function _renderToggleBtnBox() {
-            const toggleBtnBoxEl = document.createElement('div');
-            toggleBtnBoxEl.classList.add(CLS_TOGGLE_BTN_BOX);
-
-            const toggleBtnEl = document.createElement('div');
-            toggleBtnEl.classList.add(CLS_TOGGLE_BTN);
-            toggleBtnEl.innerText = 'Toggle';
-            toggleBtnEl.addEventListener('click', () => {
-                toggleMini();
-            });
-
-            toggleBtnBoxEl.appendChild(toggleBtnEl);
-            return toggleBtnBoxEl;
         }
 
         function toggleMini() {
@@ -222,7 +212,8 @@ namespace Services {
             create,
             setOptions,
             setData,
-            render
+            render,
+            toggleMini,
         }
     };
 
