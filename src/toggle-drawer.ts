@@ -85,16 +85,7 @@ namespace Services {
 
         function select(id: string) {
             let itemBoxEl = _rootEl.querySelector(`[data-id="${id}"]`) as HTMLElement;
-            _selectMenuItemFamily(itemBoxEl);
-        }
-
-        function _selectMenuItemFamily(itemBoxEl: HTMLElement) {
             _selectMenuItem(itemBoxEl);
-            let parentItemBoxEl = _findParentItemBoxEl(itemBoxEl);
-            while (parentItemBoxEl) {
-                _selectMenuItem(parentItemBoxEl);
-                parentItemBoxEl = _findParentItemBoxEl(parentItemBoxEl);
-            }
         }
 
         function _findParentItemBoxEl(itemBoxEl: HTMLElement) {
@@ -211,6 +202,11 @@ namespace Services {
 
             _renderMenuItemContent(menuItemBoxEl, item, level);
 
+            menuItemBoxEl.addEventListener('click', (event) => {
+                event.stopPropagation();
+                _selectMenuItem(menuItemBoxEl);
+            });
+
             if (item.subList && item.subList.length > 0) {
                 const subListEl = document.createElement('div');
                 subListEl.className = `${CLS_MENU_ITEM_SUB_LIST}`;
@@ -218,12 +214,6 @@ namespace Services {
                     subListEl.appendChild(_renderMenuItemBox(child, level + 1));
                 }
                 menuItemBoxEl.appendChild(subListEl);
-
-                menuItemBoxEl.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    _selectMenuItem(menuItemBoxEl);
-                });
-
                 menuItemBoxEl.addEventListener('mouseenter', (event) => {
                     if (_isMini) {
                         _adjustContainerElPosition(item, menuItemBoxEl, subListEl);
@@ -235,18 +225,27 @@ namespace Services {
         }
 
         function _selectMenuItem(menuItemBoxEl: HTMLElement) {
+            // if the item is already selected, deselect it
+            if (menuItemBoxEl.classList.contains(CLS_SELECTED)) {
+                menuItemBoxEl.classList.remove(CLS_SELECTED);
+                return;
+            }
+
             if (_options.singleSelect) {
-                // check if item has the same root
-                const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
-                if (selectedRootItemEl) {
-                    const currentRootItemEl = _getRootListItemEl(menuItemBoxEl);
-                    if (selectedRootItemEl !== currentRootItemEl) {
-                        selectedRootItemEl.classList.remove(CLS_SELECTED);
-                    }
+                // deselect every item except the current one and its parents
+                const selectedItems = _rootEl.querySelectorAll(`.${CLS_SELECTED}`);
+                for (const item of selectedItems) {
+                    item.classList.remove(CLS_SELECTED);
                 }
             }
-            menuItemBoxEl.classList.toggle(CLS_SELECTED);
-            _selectedItemEl = menuItemBoxEl;
+
+            // select the current item and its parents
+            let parentItemBoxEl = _findParentItemBoxEl(menuItemBoxEl);
+            while (parentItemBoxEl) {
+                parentItemBoxEl.classList.add(CLS_SELECTED);
+                parentItemBoxEl = _findParentItemBoxEl(parentItemBoxEl);
+            }
+            menuItemBoxEl.classList.add(CLS_SELECTED);
         }
 
         function _renderMenuItemContent(box: HTMLElement, item: MenuItem, level: number) {
