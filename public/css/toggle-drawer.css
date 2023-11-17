@@ -23,7 +23,8 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    transition: 0.4s;
+    /* 로딩후에만 트랜지션 적용되도록 수정 */ 
+    /* transition: 0.4s; */ 
     box-sizing: border-box;
 }
 
