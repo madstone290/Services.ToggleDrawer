@@ -2,7 +2,8 @@
     --drawer-full-width: 300px;
     --drawer-mini-width: 70px;
     --scroll-width: 5px;
-    --item-content-height: 45px;
+    --root-menu-item-height: 45px;
+    --sub-menu-item-height: 35px;
 
 
     --selected-border-color: #19aa8d;
@@ -137,16 +138,21 @@
     display: block;
     width: 200px;
     border: 1px solid black;
+    z-index: 9999;
 }
 
 .td-menu-item-content {
-    height: var(--item-content-height);
+    height: var(--sub-menu-item-height);
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: start;
     padding-right: 10px;
+}
+
+.td-menu-item-box.td-menu-item-box.td-level-0>.td-menu-item-content {
+    height: var(--root-menu-item-height);
 }
 
 .td-menu-item-box.td-menu-item-box.td-selected>.td-menu-item-content>.td-arrow-icon {
