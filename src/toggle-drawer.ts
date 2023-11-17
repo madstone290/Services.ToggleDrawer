@@ -1,6 +1,7 @@
 namespace Services {
 
     interface MenuItem {
+        id: string;
         icon: string;
         name: string;
         url: string;
@@ -82,18 +83,29 @@ namespace Services {
             _renderMenuItemList();
         }
 
+        function select(id: string) {
+            let itemBoxEl = _rootEl.querySelector(`[data-id="${id}"]`) as HTMLElement;
+            _selectMenuItemFamily(itemBoxEl);
+        }
+
+        function _selectMenuItemFamily(itemBoxEl: HTMLElement) {
+            _selectMenuItem(itemBoxEl);
+            let parentItemBoxEl = _findParentItemBoxEl(itemBoxEl);
+            while (parentItemBoxEl) {
+                _selectMenuItem(parentItemBoxEl);
+                parentItemBoxEl = _findParentItemBoxEl(parentItemBoxEl);
+            }
+        }
+
+        function _findParentItemBoxEl(itemBoxEl: HTMLElement) {
+            if (itemBoxEl.parentElement.parentElement.classList.contains(CLS_MENU_ITEM_BOX)) {
+                return itemBoxEl.parentElement.parentElement;
+            }
+            return null;
+        }
         function toggleMini() {
             _rootEl.classList.toggle(CLS_MINI);
             _isMini = !_isMini;
-
-            // todo reset selected items
-            if (_selectedItemEl) {
-                _selectedItemEl.classList.remove(CLS_SELECTED);
-                const selectedRootItem = _getRootListItemEl(_selectedItemEl);
-                if (selectedRootItem) {
-                    selectedRootItem.classList.remove(CLS_SELECTED);
-                }
-            }
 
             _renderHeader();
 
@@ -195,6 +207,7 @@ namespace Services {
             const menuItemBoxEl = document.createElement('div');
             const clsLevel = 'td-level-' + level;
             menuItemBoxEl.classList.add(CLS_MENU_ITEM_BOX, clsLevel);
+            menuItemBoxEl.setAttribute('data-id', item.id);
 
             _renderMenuItemContent(menuItemBoxEl, item, level);
 
@@ -208,18 +221,7 @@ namespace Services {
 
                 menuItemBoxEl.addEventListener('click', (event) => {
                     event.stopPropagation();
-                    if (_options.singleSelect) {
-                        // check if item has the same root
-                        const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
-                        if (selectedRootItemEl) {
-                            const currentRootItemEl = _getRootListItemEl(menuItemBoxEl);
-                            if (selectedRootItemEl !== currentRootItemEl) {
-                                selectedRootItemEl.classList.remove(CLS_SELECTED);
-                            }
-                        }
-                    }
-                    menuItemBoxEl.classList.toggle(CLS_SELECTED);
-                    _selectedItemEl = menuItemBoxEl;
+                    _selectMenuItem(menuItemBoxEl);
                 });
 
                 menuItemBoxEl.addEventListener('mouseenter', (event) => {
@@ -232,6 +234,20 @@ namespace Services {
             return menuItemBoxEl;
         }
 
+        function _selectMenuItem(menuItemBoxEl: HTMLElement) {
+            if (_options.singleSelect) {
+                // check if item has the same root
+                const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
+                if (selectedRootItemEl) {
+                    const currentRootItemEl = _getRootListItemEl(menuItemBoxEl);
+                    if (selectedRootItemEl !== currentRootItemEl) {
+                        selectedRootItemEl.classList.remove(CLS_SELECTED);
+                    }
+                }
+            }
+            menuItemBoxEl.classList.toggle(CLS_SELECTED);
+            _selectedItemEl = menuItemBoxEl;
+        }
 
         function _renderMenuItemContent(box: HTMLElement, item: MenuItem, level: number) {
             const contentContainerEl = document.createElement('div');
@@ -309,6 +325,7 @@ namespace Services {
             setData,
             render,
             toggleMini,
+            select
         }
     };
 
