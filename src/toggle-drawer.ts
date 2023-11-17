@@ -264,8 +264,11 @@ namespace Services {
         }
 
         function _renderDefaultAnchorContent(anchor: HTMLElement, item: MenuItem, level: number) {
-            const iconEl = document.createElement('span');
-            iconEl.innerText = item.icon || item.name[0];
+            const iconEl = document.createElement('i');
+            if (item.icon) {
+                iconEl.className = item.icon;
+                iconEl.style.marginRight = '5px';
+            }
             const nameEl = document.createElement('span');
             nameEl.innerText = item.name;
 
