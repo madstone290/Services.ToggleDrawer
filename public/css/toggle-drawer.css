@@ -109,23 +109,23 @@
     padding-left: 0px;
 }
 
-.td-menu-item-box.td-selected>.td-menu-item-children {
+.td-menu-item-box.td-selected>.td-menu-item-sub-list {
     display: block;
 }
 
-.td-menu-item-box .td-menu-item-children {
+.td-menu-item-box .td-menu-item-sub-list {
     display: none;
     position: static;
 }
 
-.td-mini .td-menu-item-box.td-level-0>.td-menu-item-children {
+.td-mini .td-menu-item-box.td-level-0>.td-menu-item-sub-list {
     display: none;
     position: absolute;
     max-height: 100%;
     overflow: auto;
 }
 
-.td-mini .td-menu-item-box.td-level-0:hover>.td-menu-item-children {
+.td-mini .td-menu-item-box.td-level-0:hover>.td-menu-item-sub-list {
     display: block;
     width: 200px;
     border: 1px solid black;

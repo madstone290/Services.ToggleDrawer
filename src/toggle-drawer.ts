@@ -36,7 +36,7 @@ namespace Services {
 
         const CLS_MENU_ITEM_BOX = 'td-menu-item-box';
         const CLS_MENU_ITEM_CONTENT = 'td-menu-item-content';
-        const CLS_MENU_ITEM_CHILDREN = 'td-menu-item-children';
+        const CLS_MENU_ITEM_SUB_LIST = 'td-menu-item-sub-list';
         const CLS_LEVEL_0 = 'td-level-0';
 
         const CLS_SELECTED = 'td-selected';
@@ -186,12 +186,12 @@ namespace Services {
                 : _renderDefaultMenuItem(menuItemBoxEl, item, level);
 
             if (item.children && item.children.length > 0) {
-                const childrenEl = document.createElement('div');
-                childrenEl.className = `${CLS_MENU_ITEM_CHILDREN}`;
+                const subListEl = document.createElement('div');
+                subListEl.className = `${CLS_MENU_ITEM_SUB_LIST}`;
                 for (const child of item.children) {
-                    childrenEl.appendChild(_renderMenuItemBox(child, level + 1));
+                    subListEl.appendChild(_renderMenuItemBox(child, level + 1));
                 }
-                menuItemBoxEl.appendChild(childrenEl);
+                menuItemBoxEl.appendChild(subListEl);
 
                 menuItemBoxEl.addEventListener('click', (event) => {
                     event.stopPropagation();
@@ -211,7 +211,7 @@ namespace Services {
 
                 menuItemBoxEl.addEventListener('mouseenter', (event) => {
                     if (_isMini) {
-                        _adjustContainerElPosition(item, menuItemBoxEl, childrenEl);
+                        _adjustContainerElPosition(item, menuItemBoxEl, subListEl);
                     }
                 });
             }
