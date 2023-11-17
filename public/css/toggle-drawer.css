@@ -127,7 +127,6 @@
 
 .td-mini .td-menu-item-box.td-level-0:hover>.td-menu-item-children {
     display: block;
-    left: calc(var(--drawer-mini-width) - var(--scroll-width));
     width: 200px;
     border: 1px solid black;
 }

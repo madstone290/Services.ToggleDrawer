@@ -42,6 +42,7 @@ namespace Services {
         const CLS_SELECTED = 'td-selected';
         const CLS_MINI = 'td-mini';
 
+
         let _options: ToggleDrawerOptions;
         let _data: ToggleDrawerData;
 
@@ -50,7 +51,6 @@ namespace Services {
         let _selectedItemEl: HTMLElement;
 
         let _isMini: boolean = false;
-        let _itemContentHeight: number = 0;
 
         function create(container: HTMLElement) {
             container.innerHTML = `
@@ -58,15 +58,6 @@ namespace Services {
                 </div>
             `;
             _rootEl = container.querySelector(`.${CLS_ROOT}`) as HTMLElement;
-            _rootListEl = container.querySelector(`.${CLS_ROOT} .${CLS_ROOT_LIST}`);
-
-            _itemContentHeight = document.documentElement.style.getPropertyValue('--item-content-height') as any as number;
-
-            // Get the computed style of the element
-            const style = getComputedStyle(_rootEl);
-
-            const heightText = style.getPropertyValue('--item-content-height');
-            _itemContentHeight = parseInt(heightText);
         }
 
         function setOptions(options: ToggleDrawerOptions) {
@@ -111,21 +102,24 @@ namespace Services {
             return rootListEl;
         }
 
-        function _adjustContainerElTop(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
-            if (item.children && 0 < item.children.length) {
-                const containerElHeight = item.children.length * _itemContentHeight;
-                const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
-                const containerMaxHeight = _rootEl.clientHeight;
+        function _adjustContainerElPosition(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
+            if (!item.children)
+                return;
+            const containerElHeight = childrenContainerEl.offsetHeight;
+            const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
+            const containerMaxHeight = _rootEl.clientHeight;
 
-                let adjustedContainerElTop = initialContainerElTop;
-                if (initialContainerElTop + containerElHeight > containerMaxHeight) {
-                    adjustedContainerElTop = containerMaxHeight - containerElHeight;
-                    if (adjustedContainerElTop < 0) {
-                        adjustedContainerElTop = 0;
-                    }
+            let adjustedContainerElTop = initialContainerElTop;
+            if (initialContainerElTop + containerElHeight > containerMaxHeight) {
+                adjustedContainerElTop = containerMaxHeight - containerElHeight;
+                if (adjustedContainerElTop < 0) {
+                    adjustedContainerElTop = 0;
                 }
-                childrenContainerEl.style.top = adjustedContainerElTop + 'px';
             }
+            // 서브리스트가 화면 하단을 넘어가지 않도록 top을 조정한다.
+            childrenContainerEl.style.top = adjustedContainerElTop + 'px';
+            // 서브리스트가 아이템우측에 바로 위치하도록 clientWidth를 적용한다.
+            childrenContainerEl.style.left = _rootEl.clientWidth + 'px';
         }
 
         function _getRootListItemEl(itemEl: HTMLElement) {
@@ -217,7 +211,7 @@ namespace Services {
 
                 menuItemBoxEl.addEventListener('mouseenter', (event) => {
                     if (_isMini) {
-                        _adjustContainerElTop(item, menuItemBoxEl, childrenEl);
+                        _adjustContainerElPosition(item, menuItemBoxEl, childrenEl);
                     }
                 });
             }
@@ -253,7 +247,7 @@ namespace Services {
                 <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
                 </a>
             `;
-            menuItemEl.style.paddingLeft = `${(level + 1)  * 20}px`;
+            menuItemEl.style.paddingLeft = `${(level + 1) * 20}px`;
 
             box.appendChild(menuItemEl);
             return menuItemEl;
