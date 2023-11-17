@@ -55,8 +55,8 @@
         drawer.create(container);
         drawer.setOptions({
             singleSelect: true,
-            enableToggleBtn: true,
-            modeChangedCallback: (isMini) => {
+            showToggleBtn: true,
+            onModeChanged: (isMini) => {
                 if (isMini) {
                     document.documentElement.style.setProperty('--drawer-width', '70px');
                 } else {

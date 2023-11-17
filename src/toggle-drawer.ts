@@ -16,8 +16,9 @@ namespace Services {
          * whether not to allow multiple selection. Default is true.
          */
         singleSelect: boolean;
+        showToggleBtn: boolean;
 
-        modeChangedCallback(isMini: boolean): void;
+        onModeChanged(isMini: boolean): void;
 
         renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
         renderCustomHeader: (box: HTMLElement) => HTMLElement;
@@ -79,9 +80,11 @@ namespace Services {
         function render() {
             _rootEl.replaceChildren();
 
-            _renderToggleBtn();
-            _renderHeader();
+            if (_options.showToggleBtn) {
+                _renderToggleBtn();
+            }
 
+            _renderHeader();
             _renderMenuItemList();
         }
 
@@ -98,8 +101,8 @@ namespace Services {
                 }
             }
 
-            if (_options.modeChangedCallback)
-                _options.modeChangedCallback(_isMini);
+            if (_options.onModeChanged)
+                _options.onModeChanged(_isMini);
         }
 
         function _renderRootList() {
