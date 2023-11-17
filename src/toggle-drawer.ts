@@ -1,10 +1,10 @@
 namespace Services {
 
     interface MenuItem {
-        name: string;
         icon: string;
+        name: string;
         url: string;
-        children: MenuItem[];
+        subList: MenuItem[];
     }
 
     interface ToggleDrawerData {
@@ -108,7 +108,7 @@ namespace Services {
         }
 
         function _adjustContainerElPosition(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
-            if (!item.children)
+            if (!item.subList)
                 return;
             const containerElHeight = childrenContainerEl.offsetHeight;
             const initialContainerElTop = itemEl.offsetTop - _rootEl.scrollTop;
@@ -198,10 +198,10 @@ namespace Services {
 
             _renderMenuItemContent(menuItemBoxEl, item, level);
 
-            if (item.children && item.children.length > 0) {
+            if (item.subList && item.subList.length > 0) {
                 const subListEl = document.createElement('div');
                 subListEl.className = `${CLS_MENU_ITEM_SUB_LIST}`;
-                for (const child of item.children) {
+                for (const child of item.subList) {
                     subListEl.appendChild(_renderMenuItemBox(child, level + 1));
                 }
                 menuItemBoxEl.appendChild(subListEl);
@@ -240,13 +240,15 @@ namespace Services {
 
             const anchor = document.createElement('a');
             anchor.classList.add(CLS_MENU_ITEM_ANCHOR);
+            if (item.url)
+                anchor.href = item.url;
             contentContainerEl.appendChild(anchor);
 
             const contentEl = _options.renderCustomAnchorContent
                 ? _options.renderCustomAnchorContent(anchor, item, level)
                 : _renderDefaultAnchorContent(anchor, item, level);
 
-            if (item.children && item.children.length > 0) {
+            if (item.subList && item.subList.length > 0) {
                 const arrowEl = document.createElement('i');
                 arrowEl.classList.add('fa', 'fa-angle-left', CLS_ARROW_ICON);
                 contentContainerEl.appendChild(arrowEl);

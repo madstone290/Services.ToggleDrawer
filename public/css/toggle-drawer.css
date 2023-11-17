@@ -26,6 +26,11 @@
     box-sizing: border-box;
 }
 
+.td-root a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .td-root * {
     box-sizing: inherit;
 }
