@@ -12,6 +12,11 @@
     height: 100%;
     overflow: auto;
     transition: 0.4s;
+    box-sizing: border-box;
+}
+
+.td-root * {
+    box-sizing: inherit;
 }
 
 .td-root::-webkit-scrollbar {
