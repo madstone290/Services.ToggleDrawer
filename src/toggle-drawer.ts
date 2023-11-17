@@ -22,7 +22,7 @@ namespace Services {
 
         renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
         renderCustomHeader: (box: HTMLElement) => HTMLElement;
-        renderMenuItem: (box: HTMLElement, item: MenuItem, level: number) => HTMLElement;
+        renderCustomAnchorContent: (anchor: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
     export const ToggleDrawer = () => {
@@ -183,9 +183,7 @@ namespace Services {
             const clsLevel = 'td-level-' + level;
             menuItemBoxEl.classList.add(CLS_MENU_ITEM_BOX, clsLevel);
 
-            const _ = _options.renderMenuItem
-                ? _options.renderMenuItem(menuItemBoxEl, item, level)
-                : _renderDefaultMenuItem(menuItemBoxEl, item, level);
+            _renderMenuItemContent(menuItemBoxEl, item, level);
 
             if (item.children && item.children.length > 0) {
                 const subListEl = document.createElement('div');
@@ -221,6 +219,30 @@ namespace Services {
             return menuItemBoxEl;
         }
 
+
+        function _renderMenuItemContent(box: HTMLElement, item: MenuItem, level: number) {
+            const contentContainerEl = document.createElement('div');
+            contentContainerEl.classList.add(CLS_MENU_ITEM_CONTENT);
+            contentContainerEl.style.paddingLeft = `${(level + 1) * 20}px`;
+
+            const anchor = document.createElement('a');
+            anchor.style.width = '100%';
+            contentContainerEl.appendChild(anchor);
+
+            const contentEl = _options.renderCustomAnchorContent
+                ? _options.renderCustomAnchorContent(anchor, item, level)
+                : _renderDefaultAnchorContent(anchor, item, level);
+
+            if (item.children && item.children.length > 0) {
+                const arrowEl = document.createElement('i');
+                arrowEl.classList.add('fa', 'fa-angle-left', CLS_ARROW_ICON);
+                contentContainerEl.appendChild(arrowEl);
+            }
+
+            box.appendChild(contentContainerEl);
+            return contentContainerEl;
+        }
+
         /* render functions end */
 
         /* default render functions  start */
@@ -241,26 +263,16 @@ namespace Services {
             return header;
         }
 
-        function _renderDefaultMenuItem(box: HTMLElement, item: MenuItem, level: number) {
-            const contentEl = document.createElement('div');
-            contentEl.classList.add(CLS_MENU_ITEM_CONTENT);
-            contentEl.style.paddingLeft = `${(level + 1) * 20}px`;
-            contentEl.style.width = '100%';
-            contentEl.innerHTML = `
-                <a style='width:100%;'>
-                    <span>${item.icon || item.name[0]}</span>
-                    <span>${item.name}</span>
-                </a>
-            `;
-            if (item.children && item.children.length > 0) {
-                const arrowEl = document.createElement('i');
-                arrowEl.classList.add('fa', 'fa-angle-left', CLS_ARROW_ICON);
-                contentEl.appendChild(arrowEl);
-            }
+        function _renderDefaultAnchorContent(anchor: HTMLElement, item: MenuItem, level: number) {
+            const iconEl = document.createElement('span');
+            iconEl.innerText = item.icon || item.name[0];
+            const nameEl = document.createElement('span');
+            nameEl.innerText = item.name;
 
-            box.appendChild(contentEl);
-            return contentEl;
+            anchor.appendChild(iconEl);
+            anchor.appendChild(nameEl);
         }
+
         /* default renderers  end */
 
         return {
