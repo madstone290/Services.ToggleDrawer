@@ -4,6 +4,7 @@
 <head>
     <title>Interactive Drawer</title>
     <link rel="stylesheet" type="text/css" href="./css/toggle-drawer.css">
+    <link rel="stylesheet" type="text/css" href="./fontawesome-6.4.2/css/all.min.css">
 </head>
 
 <body>
@@ -76,11 +77,13 @@
                 return header;
             },
             customToggleBtnRender: (box) => {
-                const toggleBtnEl = document.createElement('div');
-                toggleBtnEl.style.height = '50px';
-                toggleBtnEl.style.backgroundColor = 'red';
-                toggleBtnEl.style.width = '100%';
-                toggleBtnEl.innerText = 'Toggle';
+                const toggleBtnEl = document.createElement('button');
+                toggleBtnEl.style.width = '30px';
+                toggleBtnEl.style.height = '30px';
+                toggleBtnEl.style.margin = '10px';
+                toggleBtnEl.style.color = 'red';
+                toggleBtnEl.style.border = 'none';
+                toggleBtnEl.className = 'fa fa-bars';
                 box.appendChild(toggleBtnEl);
                 return toggleBtnEl;
             },
