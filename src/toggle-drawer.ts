@@ -37,6 +37,8 @@ namespace Services {
         const CLS_MENU_ITEM_BOX = 'td-menu-item-box';
         const CLS_MENU_ITEM_CONTENT = 'td-menu-item-content';
         const CLS_MENU_ITEM_SUB_LIST = 'td-menu-item-sub-list';
+        const CLS_ARROW_ICON = 'td-arrow-icon';
+
         const CLS_LEVEL_0 = 'td-level-0';
 
         const CLS_SELECTED = 'td-selected';
@@ -240,24 +242,26 @@ namespace Services {
         }
 
         function _renderDefaultMenuItem(box: HTMLElement, item: MenuItem, level: number) {
-            const menuItemEl = document.createElement('div');
-            menuItemEl.classList.add(CLS_MENU_ITEM_CONTENT);
-            menuItemEl.innerHTML = `
-                <a>
-                <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
+            const contentEl = document.createElement('div');
+            contentEl.classList.add(CLS_MENU_ITEM_CONTENT);
+            contentEl.style.paddingLeft = `${(level + 1) * 20}px`;
+            contentEl.style.width = '100%';
+            contentEl.innerHTML = `
+                <a style='width:100%;'>
+                    <span>${item.icon || item.name[0]}</span>
+                    <span>${item.name}</span>
                 </a>
             `;
-            menuItemEl.style.paddingLeft = `${(level + 1) * 20}px`;
+            if (item.children && item.children.length > 0) {
+                const arrowEl = document.createElement('i');
+                arrowEl.classList.add('fa', 'fa-angle-left', CLS_ARROW_ICON);
+                contentEl.appendChild(arrowEl);
+            }
 
-            box.appendChild(menuItemEl);
-            return menuItemEl;
+            box.appendChild(contentEl);
+            return contentEl;
         }
-
-
-
         /* default renderers  end */
-
-
 
         return {
             create,
