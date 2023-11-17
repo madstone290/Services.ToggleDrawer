@@ -94,9 +94,15 @@ namespace Services {
             }
             return null;
         }
-        function toggleMini() {
-            _rootEl.classList.toggle(CLS_MINI);
-            _isMini = !_isMini;
+        function changeMode(mini: boolean) {
+            
+            if (mini) {
+                _rootEl.classList.add(CLS_MINI);
+
+            } else {
+                _rootEl.classList.remove(CLS_MINI);
+            }
+            _isMini = mini;
 
             _renderHeader();
 
@@ -130,22 +136,6 @@ namespace Services {
             childrenContainerEl.style.left = _rootEl.clientWidth + 'px';
         }
 
-        function _getRootListItemEl(itemEl: HTMLElement) {
-            if (itemEl == null)
-                return null;
-            if (itemEl.classList.contains(CLS_LEVEL_0)) {
-                return itemEl;
-            }
-            let parentEl = itemEl.parentElement;
-            while (parentEl) {
-                if (parentEl.classList.contains(CLS_LEVEL_0)) {
-                    return parentEl;
-                }
-                parentEl = parentEl.parentElement;
-            }
-            return null;
-        }
-
         /* render functions start */
 
         function _renderToggleBtn() {
@@ -157,7 +147,7 @@ namespace Services {
                 : _renderDefaultToggleBtn(toggleBtnBoxEl);
 
             btnEl.addEventListener('click', () => {
-                toggleMini();
+                changeMode(!_isMini);
             });
             _rootEl.appendChild(toggleBtnBoxEl);
         }
@@ -323,7 +313,7 @@ namespace Services {
             setOptions,
             setData,
             render,
-            toggleMini,
+            changeMode,
             select
         }
     };
