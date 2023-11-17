@@ -2,7 +2,7 @@
     --drawer-full-width: 300px;
     --drawer-mini-width: 70px;
     --scroll-width: 5px;
-    --item-content-height: 35px;
+    --item-content-height: 45px;
 
 
     --selected-border-color: #19aa8d;
@@ -149,5 +149,13 @@
 }
 
 .td-mini .td-menu-item-box.td-level-0>.td-menu-item-content>.td-arrow-icon {
+    display: none;
+}
+
+.td-menu-item-anchor {
+    width: 100%;
+}
+
+.td-mini .td-menu-item-box.td-level-0>.td-menu-item-content .td-hide-when-mini {
     display: none;
 }

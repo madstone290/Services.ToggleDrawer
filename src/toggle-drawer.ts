@@ -37,12 +37,14 @@ namespace Services {
         const CLS_MENU_ITEM_BOX = 'td-menu-item-box';
         const CLS_MENU_ITEM_CONTENT = 'td-menu-item-content';
         const CLS_MENU_ITEM_SUB_LIST = 'td-menu-item-sub-list';
+        const CLS_MENU_ITEM_ANCHOR = 'td-menu-item-anchor';
         const CLS_ARROW_ICON = 'td-arrow-icon';
 
         const CLS_LEVEL_0 = 'td-level-0';
 
         const CLS_SELECTED = 'td-selected';
         const CLS_MINI = 'td-mini';
+        const CLS_HIDE_WHEN_MINI = 'td-hide-when-mini';
 
 
         let _options: ToggleDrawerOptions;
@@ -226,7 +228,7 @@ namespace Services {
             contentContainerEl.style.paddingLeft = `${(level + 1) * 20}px`;
 
             const anchor = document.createElement('a');
-            anchor.style.width = '100%';
+            anchor.classList.add(CLS_MENU_ITEM_ANCHOR);
             contentContainerEl.appendChild(anchor);
 
             const contentEl = _options.renderCustomAnchorContent
@@ -269,7 +271,9 @@ namespace Services {
                 iconEl.className = item.icon;
                 iconEl.style.marginRight = '5px';
             }
+
             const nameEl = document.createElement('span');
+            nameEl.classList.add(CLS_HIDE_WHEN_MINI);
             nameEl.innerText = item.name;
 
             anchor.appendChild(iconEl);
