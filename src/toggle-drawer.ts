@@ -22,6 +22,7 @@ namespace Services {
 
         renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
         renderCustomHeader: (box: HTMLElement) => HTMLElement;
+        renderCustomMiniHeader: (box: HTMLElement) => HTMLElement;
         renderCustomAnchorContent: (anchor: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
@@ -51,17 +52,17 @@ namespace Services {
         let _data: ToggleDrawerData;
 
         let _rootEl: HTMLElement;
+        let _headerBoxEl: HTMLElement;
         let _rootListEl: HTMLElement;
         let _selectedItemEl: HTMLElement;
 
         let _isMini: boolean = false;
 
         function create(container: HTMLElement) {
-            container.innerHTML = `
-                <div class="${CLS_ROOT}">
-                </div>
-            `;
-            _rootEl = container.querySelector(`.${CLS_ROOT}`) as HTMLElement;
+            _rootEl = document.createElement('div');
+            _rootEl.classList.add(CLS_ROOT);
+
+            container.appendChild(_rootEl);
         }
 
         function setOptions(options: ToggleDrawerOptions) {
@@ -73,8 +74,6 @@ namespace Services {
         }
 
         function render() {
-            _rootEl.replaceChildren();
-
             if (_options.showToggleBtn) {
                 _renderToggleBtn();
             }
@@ -95,6 +94,8 @@ namespace Services {
                     selectedRootItem.classList.remove(CLS_SELECTED);
                 }
             }
+
+            _renderHeader();
 
             if (_options.onModeChanged)
                 _options.onModeChanged(_isMini);
@@ -159,14 +160,24 @@ namespace Services {
         }
 
         function _renderHeader() {
-            const headerBoxEl = document.createElement('div');
-            headerBoxEl.classList.add(CLS_HEADER_BOX);
+            if (!_headerBoxEl) {
+                _headerBoxEl = document.createElement('div');
+                _headerBoxEl.classList.add(CLS_HEADER_BOX);
+                _rootEl.appendChild(_headerBoxEl);
+            }
 
-            const _ = _options.renderCustomHeader
-                ? _options.renderCustomHeader(headerBoxEl)
-                : _renderDefaultHeader(headerBoxEl);
+            _headerBoxEl.replaceChildren();
+            if (_isMini) {
+                const _ = _options.renderCustomMiniHeader
+                    ? _options.renderCustomMiniHeader(_headerBoxEl)
+                    : _renderDefaultMiniHeader(_headerBoxEl);
+            } else {
+                const _ = _options.renderCustomHeader
+                    ? _options.renderCustomHeader(_headerBoxEl)
+                    : _renderDefaultHeader(_headerBoxEl);
+            }
 
-            _rootEl.appendChild(headerBoxEl);
+
         }
 
         function _renderMenuItemList() {
@@ -261,6 +272,14 @@ namespace Services {
             const header = document.createElement('div');
             header.classList.add(CLS_HEADER);
             header.innerText = 'Header Content';
+            box.appendChild(header);
+            return header;
+        }
+
+        function _renderDefaultMiniHeader(box: HTMLElement) {
+            const header = document.createElement('div');
+            header.classList.add(CLS_HEADER);
+            header.innerText = 'H-C';
             box.appendChild(header);
             return header;
         }
