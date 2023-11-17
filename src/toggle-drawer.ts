@@ -60,12 +60,12 @@ namespace Services {
             _rootEl = container.querySelector(`.${CLS_ROOT}`) as HTMLElement;
             _rootListEl = container.querySelector(`.${CLS_ROOT} .${CLS_ROOT_LIST}`);
 
-            _itemContentHeight = document.documentElement.style.getPropertyValue('--td-item-content-height') as any as number;
+            _itemContentHeight = document.documentElement.style.getPropertyValue('--item-content-height') as any as number;
 
             // Get the computed style of the element
             const style = getComputedStyle(_rootEl);
 
-            const heightText = style.getPropertyValue('--td-item-content-height');
+            const heightText = style.getPropertyValue('--item-content-height');
             _itemContentHeight = parseInt(heightText);
         }
 
@@ -253,7 +253,7 @@ namespace Services {
                 <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
                 </a>
             `;
-            menuItemEl.style.paddingLeft = `${level * 20}px`;
+            menuItemEl.style.paddingLeft = `${(level + 1)  * 20}px`;
 
             box.appendChild(menuItemEl);
             return menuItemEl;
