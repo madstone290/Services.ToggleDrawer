@@ -19,17 +19,21 @@ namespace Services {
 
         modeChangedCallback(isMini: boolean): void;
 
-        customToggleBtnRender: (box: HTMLElement) => HTMLElement;
-        customHeaderRender: (box: HTMLElement) => HTMLElement;
-        customMenuItemRender: (box: HTMLElement, item: MenuItem, level: number) => HTMLElement;
+        renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
+        renderCustomHeader: (box: HTMLElement) => HTMLElement;
+        renderMenuItem: (box: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
     export const ToggleDrawer = () => {
         const CLS_ROOT = 'td-root';
         const CLS_ROOT_LIST = 'td-root-list';
         const CLS_TOGGLE_BTN_BOX = 'td-toggle-btn-box';
+        const CLS_TOGGLE_BTN = 'td-toggle-btn';
+        const CLS_HEADER_BOX = 'td-header-box';
+        const CLS_HEADER = 'td-header';
 
-        const CLS_MENU_ITEM = 'td-menu-item';
+
+        const CLS_MENU_ITEM_BOX = 'td-menu-item-box';
         const CLS_MENU_ITEM_CONTENT = 'td-menu-item-content';
         const CLS_MENU_ITEM_CHILDREN = 'td-menu-item-children';
         const CLS_LEVEL_0 = 'td-level-0';
@@ -75,28 +79,10 @@ namespace Services {
         function render() {
             _rootEl.replaceChildren();
 
-            if (_options.customToggleBtnRender) {
-                const toggleBtnBoxEl = document.createElement('div');
-                toggleBtnBoxEl.classList.add(CLS_TOGGLE_BTN_BOX);
-                const btnEl = _options.customToggleBtnRender(toggleBtnBoxEl);
-                btnEl.addEventListener('click', () => {
-                    toggleMini();
-                });
-                _rootEl.appendChild(toggleBtnBoxEl);
-            }
+            _renderToggleBtn();
+            _renderHeader();
 
-            if (_options.customHeaderRender) {
-                const headerBoxEl = document.createElement('div');
-                headerBoxEl.classList.add('td-header-box');
-                _options.customHeaderRender(headerBoxEl);
-                _rootEl.appendChild(headerBoxEl);
-            }
-
-            _rootListEl = _renderRootList();
-            const menuItems = _createMenuItems();
-            _rootListEl.replaceChildren(...menuItems);
-
-            _rootEl.appendChild(_rootListEl);
+            _renderMenuItemList();
         }
 
         function toggleMini() {
@@ -120,62 +106,6 @@ namespace Services {
             const rootListEl = document.createElement('div');
             rootListEl.classList.add(`${CLS_ROOT_LIST}`);
             return rootListEl;
-        }
-
-        function _createMenuItems() {
-            return _data.menuItems.map(item => {
-                return _createMenuItem(item);
-            })
-        }
-
-        function _createMenuItem(item: MenuItem, level: number = 0) {
-            const menuItemBox = document.createElement('div');
-            const clsLevel = 'td-level-' + level;
-            menuItemBox.className = `${CLS_MENU_ITEM} ${clsLevel}`;
-            if (_options.customMenuItemRender) {
-                _options.customMenuItemRender(menuItemBox, item, level);
-            } else {
-                const defaultMenuItemEl = document.createElement('div');
-                defaultMenuItemEl.className = `${CLS_MENU_ITEM_CONTENT}`;
-                defaultMenuItemEl.innerHTML = `
-                <a>
-                <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
-                </a>
-                `;
-                menuItemBox.appendChild(defaultMenuItemEl);
-            }
-
-            if (item.children && item.children.length > 0) {
-                const containerEl = document.createElement('div');
-                containerEl.className = `${CLS_MENU_ITEM_CHILDREN}`;
-                for (const child of item.children) {
-                    containerEl.appendChild(_createMenuItem(child, level + 1));
-                }
-                menuItemBox.appendChild(containerEl);
-
-                menuItemBox.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    if (_options.singleSelect) {
-                        const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
-                        if (selectedRootItemEl) {
-                            const currentRootItemEl = _getRootListItemEl(menuItemBox);
-                            if (selectedRootItemEl !== currentRootItemEl) {
-                                selectedRootItemEl.classList.remove(CLS_SELECTED);
-                            }
-                        }
-                    }
-                    menuItemBox.classList.toggle(CLS_SELECTED);
-                    _selectedItemEl = menuItemBox;
-                });
-
-                menuItemBox.addEventListener('mouseenter', (event) => {
-                    if (_isMini) {
-                        _adjustContainerElTop(item, menuItemBox, containerEl);
-                    }
-                });
-            }
-
-            return menuItemBox;
         }
 
         function _adjustContainerElTop(item: MenuItem, itemEl: HTMLElement, childrenContainerEl: HTMLElement) {
@@ -210,6 +140,127 @@ namespace Services {
             }
             return null;
         }
+
+        /* render functions start */
+
+        function _renderToggleBtn() {
+            const toggleBtnBoxEl = document.createElement('div');
+            toggleBtnBoxEl.classList.add(CLS_TOGGLE_BTN_BOX);
+
+            const btnEl = _options.renderCustomToggleBtn
+                ? _options.renderCustomToggleBtn(toggleBtnBoxEl)
+                : _renderDefaultToggleBtn(toggleBtnBoxEl);
+
+            btnEl.addEventListener('click', () => {
+                toggleMini();
+            });
+            _rootEl.appendChild(toggleBtnBoxEl);
+        }
+
+        function _renderHeader() {
+            const headerBoxEl = document.createElement('div');
+            headerBoxEl.classList.add(CLS_HEADER_BOX);
+
+            const _ = _options.renderCustomHeader
+                ? _options.renderCustomHeader(headerBoxEl)
+                : _renderDefaultHeader(headerBoxEl);
+
+            _rootEl.appendChild(headerBoxEl);
+        }
+
+        function _renderMenuItemList() {
+            _rootListEl = _renderRootList();
+
+            _data.menuItems.map(item => {
+                const itemBox = _renderMenuItemBox(item, 0);
+                _rootListEl.appendChild(itemBox);
+            });
+
+            _rootEl.appendChild(_rootListEl);
+        }
+
+        function _renderMenuItemBox(item: MenuItem, level: number) {
+            const menuItemBoxEl = document.createElement('div');
+            const clsLevel = 'td-level-' + level;
+            menuItemBoxEl.classList.add(CLS_MENU_ITEM_BOX, clsLevel);
+
+            const _ = _options.renderMenuItem
+                ? _options.renderMenuItem(menuItemBoxEl, item, level)
+                : _renderDefaultMenuItem(menuItemBoxEl, item, level);
+
+            if (item.children && item.children.length > 0) {
+                const childrenEl = document.createElement('div');
+                childrenEl.className = `${CLS_MENU_ITEM_CHILDREN}`;
+                for (const child of item.children) {
+                    childrenEl.appendChild(_renderMenuItemBox(child, level + 1));
+                }
+                menuItemBoxEl.appendChild(childrenEl);
+
+                menuItemBoxEl.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (_options.singleSelect) {
+                        // check if item has the same root
+                        const selectedRootItemEl = _getRootListItemEl(_selectedItemEl);
+                        if (selectedRootItemEl) {
+                            const currentRootItemEl = _getRootListItemEl(menuItemBoxEl);
+                            if (selectedRootItemEl !== currentRootItemEl) {
+                                selectedRootItemEl.classList.remove(CLS_SELECTED);
+                            }
+                        }
+                    }
+                    menuItemBoxEl.classList.toggle(CLS_SELECTED);
+                    _selectedItemEl = menuItemBoxEl;
+                });
+
+                menuItemBoxEl.addEventListener('mouseenter', (event) => {
+                    if (_isMini) {
+                        _adjustContainerElTop(item, menuItemBoxEl, childrenEl);
+                    }
+                });
+            }
+            _rootListEl.appendChild(menuItemBoxEl);
+            return menuItemBoxEl;
+        }
+
+        /* render functions end */
+
+        /* default render functions  start */
+
+        function _renderDefaultToggleBtn(box: HTMLElement) {
+            const toggleBtnEl = document.createElement('button');
+            toggleBtnEl.classList.add(CLS_TOGGLE_BTN);
+            toggleBtnEl.classList.add('fa', 'fa-bars');
+            box.appendChild(toggleBtnEl);
+            return toggleBtnEl;
+        }
+
+        function _renderDefaultHeader(box: HTMLElement) {
+            const header = document.createElement('div');
+            header.classList.add(CLS_HEADER);
+            header.innerText = 'Header Content';
+            box.appendChild(header);
+            return header;
+        }
+
+        function _renderDefaultMenuItem(box: HTMLElement, item: MenuItem, level: number) {
+            const menuItemEl = document.createElement('div');
+            menuItemEl.classList.add(CLS_MENU_ITEM_CONTENT);
+            menuItemEl.innerHTML = `
+                <a>
+                <span>${item.icon || item.name[0]}</span><span>${item.name}</span>
+                </a>
+            `;
+            menuItemEl.style.paddingLeft = `${level * 20}px`;
+
+            box.appendChild(menuItemEl);
+            return menuItemEl;
+        }
+
+
+
+        /* default renderers  end */
+
+
 
         return {
             create,
