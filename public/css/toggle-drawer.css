@@ -23,8 +23,8 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    /* 로딩후에만 트랜지션 적용되도록 수정 */ 
-    /* transition: 0.4s; */ 
+    /* 로딩후에만 트랜지션 적용되도록 수정 */
+    /* transition: 0.4s; */
     box-sizing: border-box;
 }
 
@@ -168,6 +168,14 @@
     width: 100%;
 }
 
-.td-mini .td-menu-item-box.td-level-0>.td-menu-item-content .td-hide-when-mini {
+.td-root.td-mini .td-menu-item-box.td-level-0>.td-menu-item-content .td-hide-in-mini-mode {
+    display: none;
+}
+
+.td-root.td-mini .td-header-box .td-hide-in-mini-mode {
+    display: none;
+}
+
+.td-root:not(.td-mini) .td-header-box .td-hide-in-normal-mode {
     display: none;
 }

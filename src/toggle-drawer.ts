@@ -23,7 +23,6 @@ namespace Services {
 
         renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
         renderCustomHeader: (box: HTMLElement) => HTMLElement;
-        renderCustomMiniHeader: (box: HTMLElement) => HTMLElement;
         renderCustomAnchorContent: (anchor: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
@@ -42,11 +41,12 @@ namespace Services {
         const CLS_MENU_ITEM_ANCHOR = 'td-menu-item-anchor';
         const CLS_ARROW_ICON = 'td-arrow-icon';
 
-        const CLS_LEVEL_0 = 'td-level-0';
+        const CLS_LEVEL_PREFIX = 'td-level-';
 
         const CLS_SELECTED = 'td-selected';
         const CLS_MINI = 'td-mini';
-        const CLS_HIDE_WHEN_MINI = 'td-hide-when-mini';
+        const CLS_HIDE_IN_MINI_MODE = 'td-hide-in-mini-mode';
+        const CLS_HIDE_IN_NORMAL_MODE = 'td-hide-in-normal-mode';
 
 
         let _options: ToggleDrawerOptions;
@@ -95,7 +95,7 @@ namespace Services {
             return null;
         }
         function changeMode(mini: boolean) {
-            
+
             if (mini) {
                 _rootEl.classList.add(CLS_MINI);
 
@@ -103,8 +103,6 @@ namespace Services {
                 _rootEl.classList.remove(CLS_MINI);
             }
             _isMini = mini;
-
-            _renderHeader();
 
             if (_options.onModeChanged)
                 _options.onModeChanged(_isMini);
@@ -153,24 +151,13 @@ namespace Services {
         }
 
         function _renderHeader() {
-            if (!_headerBoxEl) {
-                _headerBoxEl = document.createElement('div');
-                _headerBoxEl.classList.add(CLS_HEADER_BOX);
-                _rootEl.appendChild(_headerBoxEl);
-            }
+            _headerBoxEl = document.createElement('div');
+            _headerBoxEl.classList.add(CLS_HEADER_BOX);
+            _rootEl.appendChild(_headerBoxEl);
 
-            _headerBoxEl.replaceChildren();
-            if (_isMini) {
-                const _ = _options.renderCustomMiniHeader
-                    ? _options.renderCustomMiniHeader(_headerBoxEl)
-                    : _renderDefaultMiniHeader(_headerBoxEl);
-            } else {
-                const _ = _options.renderCustomHeader
-                    ? _options.renderCustomHeader(_headerBoxEl)
-                    : _renderDefaultHeader(_headerBoxEl);
-            }
-
-
+            const _ = _options.renderCustomHeader
+                ? _options.renderCustomHeader(_headerBoxEl)
+                : _renderDefaultHeader(_headerBoxEl);
         }
 
         function _renderMenuItemList() {
@@ -186,7 +173,7 @@ namespace Services {
 
         function _renderMenuItemBox(item: MenuItem, level: number) {
             const menuItemBoxEl = document.createElement('div');
-            const clsLevel = 'td-level-' + level;
+            const clsLevel = CLS_LEVEL_PREFIX + level;
             menuItemBoxEl.classList.add(CLS_MENU_ITEM_BOX, clsLevel);
             menuItemBoxEl.setAttribute('data-id', item.id);
 
@@ -278,15 +265,18 @@ namespace Services {
         function _renderDefaultHeader(box: HTMLElement) {
             const header = document.createElement('div');
             header.classList.add(CLS_HEADER);
-            header.innerText = 'Header Content';
-            box.appendChild(header);
-            return header;
-        }
 
-        function _renderDefaultMiniHeader(box: HTMLElement) {
-            const header = document.createElement('div');
-            header.classList.add(CLS_HEADER);
-            header.innerText = 'H-C';
+            const basicContent = document.createElement('div');
+            basicContent.classList.add(CLS_HIDE_IN_MINI_MODE);
+            basicContent.innerText = 'Basic Header';
+
+            const miniContent = document.createElement('div');
+            miniContent.classList.add(CLS_HIDE_IN_NORMAL_MODE);
+            miniContent.innerText = 'M.H';
+
+
+            header.appendChild(basicContent);
+            header.appendChild(miniContent);
             box.appendChild(header);
             return header;
         }
@@ -299,7 +289,7 @@ namespace Services {
             }
 
             const nameEl = document.createElement('span');
-            nameEl.classList.add(CLS_HIDE_WHEN_MINI);
+            nameEl.classList.add(CLS_HIDE_IN_MINI_MODE);
             nameEl.innerText = item.name;
 
             anchor.appendChild(iconEl);
