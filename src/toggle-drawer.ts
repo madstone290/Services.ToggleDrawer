@@ -32,7 +32,7 @@ namespace Services {
         const CLS_TOGGLE_BTN_BOX = 'td-toggle-btn-box';
         const CLS_TOGGLE_BTN = 'td-toggle-btn';
         const CLS_HEADER_BOX = 'td-header-box';
-        const CLS_HEADER = 'td-header';
+        const CLS_DEFAULT_HEADER = 'td-default-header';
 
 
         const CLS_MENU_ITEM_BOX = 'td-menu-item-box';
@@ -47,7 +47,6 @@ namespace Services {
         const CLS_MINI = 'td-mini';
         const CLS_HIDE_IN_MINI_MODE = 'td-hide-in-mini-mode';
         const CLS_HIDE_IN_NORMAL_MODE = 'td-hide-in-normal-mode';
-
 
         let _options: ToggleDrawerOptions;
         let _data: ToggleDrawerData;
@@ -264,19 +263,25 @@ namespace Services {
 
         function _renderDefaultHeader(box: HTMLElement) {
             const header = document.createElement('div');
-            header.classList.add(CLS_HEADER);
+            header.classList.add(CLS_DEFAULT_HEADER);
 
             const basicContent = document.createElement('div');
             basicContent.classList.add(CLS_HIDE_IN_MINI_MODE);
-            basicContent.innerText = 'Basic Header';
+            header.appendChild(basicContent);
+
+            const nameEl = document.createElement('div');
+            nameEl.innerText = 'James (P012)';
+            basicContent.appendChild(nameEl);
+
+            const departmentEl = document.createElement('div');
+            departmentEl.innerText = 'System Development Team';
+            basicContent.appendChild(departmentEl);
 
             const miniContent = document.createElement('div');
             miniContent.classList.add(CLS_HIDE_IN_NORMAL_MODE);
-            miniContent.innerText = 'M.H';
-
-
-            header.appendChild(basicContent);
+            miniContent.innerText = 'TD';
             header.appendChild(miniContent);
+            
             box.appendChild(header);
             return header;
         }
