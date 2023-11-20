@@ -227,17 +227,18 @@ namespace Services {
         function _renderMenuItemContent(box: HTMLElement, item: MenuItem, level: number) {
             const contentContainerEl = document.createElement('div');
             contentContainerEl.classList.add(CLS_MENU_ITEM_CONTENT);
-            contentContainerEl.style.paddingLeft = `${(level + 1) * 20}px`;
 
-            const anchor = document.createElement('a');
-            anchor.classList.add(CLS_MENU_ITEM_ANCHOR);
+
+            const anchorEl = document.createElement('a');
+            anchorEl.classList.add(CLS_MENU_ITEM_ANCHOR);
+            anchorEl.style.paddingLeft = `${(level + 1) * 20}px`;
             if (item.url)
-                anchor.href = item.url;
-            contentContainerEl.appendChild(anchor);
+                anchorEl.href = item.url;
+            contentContainerEl.appendChild(anchorEl);
 
             const contentEl = _options.renderCustomAnchorContent
-                ? _options.renderCustomAnchorContent(anchor, item, level)
-                : _renderDefaultAnchorContent(anchor, item, level);
+                ? _options.renderCustomAnchorContent(anchorEl, item, level)
+                : _renderDefaultAnchorContent(anchorEl, item, level);
 
             if (item.subList && item.subList.length > 0) {
                 const arrowEl = document.createElement('i');
@@ -281,7 +282,7 @@ namespace Services {
             miniContent.classList.add(CLS_HIDE_IN_NORMAL_MODE);
             miniContent.innerText = 'TD';
             header.appendChild(miniContent);
-            
+
             box.appendChild(header);
             return header;
         }
