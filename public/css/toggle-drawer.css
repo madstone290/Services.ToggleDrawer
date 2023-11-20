@@ -58,15 +58,19 @@
 
 .td-toggle-btn-box {
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+
 }
 
 .td-toggle-btn {
     font-size: 20px;
-    width: 30px;
-    height: 30px;
     margin: 10px;
-    color: red;
+    color: darkgrey;
     border: none;
+    cursor: pointer;
 }
 
 .td-header-box {

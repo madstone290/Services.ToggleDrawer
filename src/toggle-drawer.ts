@@ -255,7 +255,7 @@ namespace Services {
         /* default render functions  start */
 
         function _renderDefaultToggleBtn(box: HTMLElement) {
-            const toggleBtnEl = document.createElement('button');
+            const toggleBtnEl = document.createElement('div');
             toggleBtnEl.classList.add(CLS_TOGGLE_BTN);
             toggleBtnEl.classList.add('fa', 'fa-bars');
             box.appendChild(toggleBtnEl);
