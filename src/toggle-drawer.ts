@@ -235,7 +235,6 @@ namespace Services {
 
             const anchorEl = document.createElement('a');
             anchorEl.classList.add(CLS_MENU_ITEM_ANCHOR);
-            anchorEl.style.paddingLeft = `${(level + 1) * 20}px`;
             if (item.url)
                 anchorEl.href = item.url;
             contentContainerEl.appendChild(anchorEl);
