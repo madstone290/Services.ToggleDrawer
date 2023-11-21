@@ -54,7 +54,6 @@ namespace Services {
         let _rootEl: HTMLElement;
         let _headerBoxEl: HTMLElement;
         let _rootListEl: HTMLElement;
-        let _selectedItemEl: HTMLElement;
 
         let _isMini: boolean = false;
 
@@ -93,6 +92,11 @@ namespace Services {
             }
             return null;
         }
+
+        function toggle() {
+            changeMode(!_isMini);
+        }
+
         function changeMode(mini: boolean) {
 
             if (mini) {
@@ -310,6 +314,7 @@ namespace Services {
             setData,
             render,
             changeMode,
+            toggle,
             select
         }
     };
