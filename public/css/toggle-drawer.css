@@ -178,6 +178,11 @@
 }
 
 .td-menu-item-anchor {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    height: 100%;
     width: 100%;
 }
 
