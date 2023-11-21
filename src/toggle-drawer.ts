@@ -205,6 +205,9 @@ namespace Services {
         }
 
         function _selectMenuItem(menuItemBoxEl: HTMLElement) {
+            if(!menuItemBoxEl)
+                return;
+
             // if the item is already selected, deselect it
             if (menuItemBoxEl.classList.contains(CLS_SELECTED)) {
                 menuItemBoxEl.classList.remove(CLS_SELECTED);
