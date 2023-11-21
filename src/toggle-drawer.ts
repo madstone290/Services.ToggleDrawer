@@ -23,6 +23,22 @@ namespace Services {
 
         renderCustomToggleBtn: (box: HTMLElement) => HTMLElement;
         renderCustomHeader: (box: HTMLElement) => HTMLElement;
+        /**
+         * Render custom menu item content. If this is specified, renderCustomAnchorContent is ignored.
+         * @param box
+         * @param item 
+         * @param level 
+         * @returns 
+         */
+        renderCustomMenuItemContent: (box: HTMLElement, item: MenuItem, level: number) => HTMLElement;
+
+        /**
+         * Render custom anchor content. Default is icon + name. If renderCustomAnchorContent is specified, this is ignored.
+         * @param anchor
+         * @param item 
+         * @param level 
+         * @returns 
+         */
         renderCustomAnchorContent: (anchor: HTMLElement, item: MenuItem, level: number) => HTMLElement;
     }
 
@@ -180,7 +196,7 @@ namespace Services {
             menuItemBoxEl.classList.add(CLS_MENU_ITEM_BOX, clsLevel);
             menuItemBoxEl.setAttribute('data-id', item.id);
 
-            _renderMenuItemContent(menuItemBoxEl, item, level);
+            _renderMenuItem(menuItemBoxEl, item, level);
 
             menuItemBoxEl.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -205,7 +221,7 @@ namespace Services {
         }
 
         function _selectMenuItem(menuItemBoxEl: HTMLElement) {
-            if(!menuItemBoxEl)
+            if (!menuItemBoxEl)
                 return;
 
             // if the item is already selected, deselect it
@@ -231,20 +247,24 @@ namespace Services {
             menuItemBoxEl.classList.add(CLS_SELECTED);
         }
 
-        function _renderMenuItemContent(box: HTMLElement, item: MenuItem, level: number) {
+        function _renderMenuItem(box: HTMLElement, item: MenuItem, level: number) {
             const contentContainerEl = document.createElement('div');
             contentContainerEl.classList.add(CLS_MENU_ITEM_CONTENT);
 
+            if (_options.renderCustomMenuItemContent) {
+                _options.renderCustomMenuItemContent(contentContainerEl, item, level);
+            }
+            else {
+                const anchorEl = document.createElement('a');
+                anchorEl.classList.add(CLS_MENU_ITEM_ANCHOR);
+                if (item.url)
+                    anchorEl.href = item.url;
+                contentContainerEl.appendChild(anchorEl);
 
-            const anchorEl = document.createElement('a');
-            anchorEl.classList.add(CLS_MENU_ITEM_ANCHOR);
-            if (item.url)
-                anchorEl.href = item.url;
-            contentContainerEl.appendChild(anchorEl);
-
-            const contentEl = _options.renderCustomAnchorContent
-                ? _options.renderCustomAnchorContent(anchorEl, item, level)
-                : _renderDefaultAnchorContent(anchorEl, item, level);
+                const _ = _options.renderCustomAnchorContent
+                    ? _options.renderCustomAnchorContent(anchorEl, item, level)
+                    : _renderDefaultAnchorContent(anchorEl, item, level);
+            }
 
             if (item.subList && item.subList.length > 0) {
                 const arrowEl = document.createElement('i');
